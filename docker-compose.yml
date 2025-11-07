@@ -1,0 +1,70 @@
+services:
+  # Laravel Application Service
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: blockchain_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - db
+    networks:
+      - blockchain-network
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: blockchain_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80" # Backend API on port 8000
+    volumes:
+      - ./backend:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d/
+    networks:
+      - blockchain-network
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: blockchain_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-blockchain}
+      POSTGRES_USER: ${DB_USERNAME:-sail}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    volumes:
+      - blockchain-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - blockchain-network
+
+  # React Frontend (served via simple node server)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: blockchain_frontend
+    ports:
+      - "3000:3000" # React App on port 3000
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
+    depends_on:
+      - app
+    # We remove the volumes block from this service.
+    # The Dockerfile for 'frontend' creates a self-contained production image,
+    # so mounting the local folder over it was hiding the built 'dist' directory.
+    networks:
+      - blockchain-network
+
+networks:
+  blockchain-network:
+    driver: bridge
+
+volumes:
+  blockchain-db-data:
+    driver: local
