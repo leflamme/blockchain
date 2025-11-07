@@ -1,69 +1,106 @@
-Simple Blockchain Application
+# Simple Blockchain Application
+
 This project implements a simple blockchain application based on the "Project Specification" document. It uses Laravel 12 for the backend API, PostgreSQL for data persistence, and ReactJS for the frontend. The entire application is containerized using Docker.
-Project Overview
+
+## Project Overview
+
 The application demonstrates the core principles of blockchain technology:
-Immutability: Blocks, once mined, are secured by cryptographic hashes. Tampering with a block breaks the chain.
-Transparency: All blocks and transactions on the chain are viewable.
-Integrity: A simplified Proof-of-Work (PoW) system ensures that adding new blocks requires computational effort. A validation mechanism checks the integrity of the entire chain.
-Tech Stack
-Backend: Laravel 12 (PHP 8.3)
-Frontend: ReactJS (Vite)
-Database: PostgreSQL 15
-Containerization: Docker & Docker Compose
-Features
-Transaction Creation: Users can create new "pending" transactions (Sender, Receiver, Amount).
-Block Mining: A "Mine Block" feature groups all pending transactions, performs a simplified PoW (hash must start with "00"), and adds a new, valid block to the chain.
-Genesis Block: The system automatically creates a "Genesis Block" (Block #0) if the chain is empty.
-Blockchain Validation: A "Validate Chain" feature checks two things for every block:
-That its previous_hash matches the current_hash of the block before it.
-That its own current_hash is a valid hash of its contents (index, timestamp, transactions, nonce, previous hash).
-Ledger View: The frontend displays all blocks and their associated transactions.
-Status Dashboard: The UI shows the current validity status of the blockchain.
-How to Run (with Docker)
-Prerequisites
-Docker
-Docker Compose
-Installation & Setup
-Clone the Repository:
-git clone <your-repo-url>
-cd <your-repo-folder>
 
+* **Immutability:** Blocks, once mined, are secured by cryptographic hashes. Tampering with a block breaks the chain.
 
-Prepare Laravel .env file:
-Navigate to the backend directory and copy the example environment file.
-cd backend
-cp .env.example .env
+* **Transparency:** All blocks and transactions on the chain are viewable.
 
-The default .env is already configured to work with the docker-compose.yml database service (db, blockchain, sail, password).
-Prepare React .env file:
-Navigate to the frontend directory and create a .env file:
-cd ../frontend
-echo "VITE_API_URL=http://localhost:8000/api" > .env
+* **Integrity:** A simplified Proof-of-Work (PoW) system ensures that adding new blocks requires computational effort. A validation mechanism checks the integrity of the entire chain.
 
+## Tech Stack
 
-Build and Run Containers:
-From the root project directory:
-docker-compose up -d --build
+* **Backend:** Laravel 12 (PHP 8.3)
 
+* **Frontend:** ReactJS (Vite)
 
-Install Laravel Dependencies & Run Migrations:
-Once the containers are running, exec into the app container to finalize setup.
-# Install composer dependencies
-docker-compose exec app composer install
+* **Database:** PostgreSQL 15
 
-# Generate Laravel application key
-docker-compose exec app php artisan key:generate
+* **Containerization:** Docker & Docker Compose
 
-# Run database migrations
-docker-compose exec app php artisan migrate
+## Features
 
+* **Transaction Creation:** Users can create new "pending" transactions (Sender, Receiver, Amount).
 
-Accessing the Application
-React Frontend: http://localhost:3000
-Laravel API: http://localhost:8000
-API Endpoints (Section 6.1)
-POST /api/transaction: Create a new transaction.
-GET /api/transactions/pending: Get all pending transactions.
-POST /api/block/mine: Mine a new block.
-GET /api/blocks: Get all blocks in the chain.
-GET /api/blockchain/validate: Validate the blockchain's integrity.
+* **Block Mining:** A "Mine Block" feature groups all pending transactions, performs a simplified PoW (hash must start with "00"), and adds a new, valid block to the chain.
+
+* **Genesis Block:** The system automatically creates a "Genesis Block" (Block #0) if the chain is empty.
+
+* **Blockchain Validation:** A "Validate Chain" feature checks two things for every block:
+
+  1. That its `previous_hash` matches the `current_hash` of the block before it.
+
+  2. That its own `current_hash` is a valid hash of its contents (index, timestamp, transactions, nonce, previous hash).
+
+* **Ledger View:** The frontend displays all blocks and their associated transactions.
+
+* **Status Dashboard:** The UI shows the current validity status of the blockchain.
+
+## How to Run (with Docker)
+
+### Prerequisites
+
+* Docker
+
+* Docker Compose
+
+### Installation & Setup
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone <your-repo-url>
+   cd <your-repo-folder>
+
+"The default `.env` is already configured to work with the `docker-compose.yml` database service (db, blockchain, sail, password)."
+
+2. **Prepare Laravel `.env` file:** Navigate to the `frontend` directory and copy the example environment file. 
+
+    ```bash
+    cd backend
+    cp .env.example .env
+
+3. **Prepare React `.env` file:** Navigate to the `frontend` directory a `.env` file:
+
+   ```bash
+   cd ../frontend
+   echo "VITE_API_URL=http://localhost:8000/api" > .env
+
+4. **Build and Run Containers:** From the root project directory:
+
+    ```bash
+    docker-compose up -d --build
+
+5. **Install Laravel Dependencies & Run Migrations:** Once the containers are running, exec into the `app` container to finalize setup.
+
+    ```bash
+    # Install composer dependencies
+    docker-compose exec app composer install
+
+    # Generate Laravel application key
+    docker-compose exec app php artisan key:generate
+
+    # Run database migrations
+    docker-compose exec app php artisan migrate
+
+### Accessing the Application
+
+* **React Frontend:** `http://localhost:3000` 
+
+* **Laravel API:** `http://localhost:8000`
+
+## API Endpoints (Section 6.1)
+
+* **POST /api/transaction** :Create a new transaction.
+
+* **GET /api/transaction/pending** :Get all pending transactions.
+
+* **POST /api/block/mine** :Mine a new block.
+
+* **GET /api/blocks** :Get all blocks in the chain.
+
+* **GET /api/blockchain/validate** :Validate the blockchain's integrity.
