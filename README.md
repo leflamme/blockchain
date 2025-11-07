@@ -56,7 +56,7 @@ The application demonstrates the core principles of blockchain technology:
    git clone <your-repo-url>
    cd <your-repo-folder>
 
-"The default `.env` is already configured to work with the `docker-compose.yml` database service (db, blockchain, sail, password)."
+The default `.env` is already configured to work with the `docker-compose.yml` database service (db, blockchain, sail, password).
 
 2. **Prepare Laravel `.env` file:** Navigate to the `frontend` directory and copy the example environment file. 
 
